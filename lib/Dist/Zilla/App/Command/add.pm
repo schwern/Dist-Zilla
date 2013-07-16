@@ -66,7 +66,7 @@ sub execute {
   for my $name ( @$arg ) {
     my $factory = $minter->plugin_named(':DefaultModuleMaker');
     $factory->make_module({ name => $name });
-    for my $file ( @{ $factory->zilla->files} ) {
+    for my $file ($factory->zilla->files->@*) {
       $zilla->_write_out_file($file, $root);
     }
   }

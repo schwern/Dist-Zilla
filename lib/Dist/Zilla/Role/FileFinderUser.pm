@@ -102,7 +102,7 @@ parameter method => (
 role {
   my ($p) = @_;
 
-  my ($finder_arg, @finder_arg_aliases) = @{ $p->finder_arg_names };
+  my ($finder_arg, @finder_arg_aliases) = $p->finder_arg_names->@*;
   confess "no finder arg names given!" unless $finder_arg;
 
   around mvp_multivalue_args => sub {
@@ -131,14 +131,14 @@ role {
   has $finder_arg => (
     is  => 'ro',
     isa => 'ArrayRef[Str]',
-    default => sub { [ @{ $p->default_finders } ] },
+    default => sub { [ $p->default_finders->@* ] },
   );
 
   method $p->method => sub {
     my ($self) = @_;
 
     my @filesets = map {; $self->zilla->find_files($_) }
-                   @{ $self->$finder_arg };
+                   $self->$finder_arg->@*;
 
     my %by_name = map {; $_->name, $_ } map { @$_ } @filesets;
 

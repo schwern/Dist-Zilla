@@ -96,7 +96,7 @@ sub section_header {
 sub munge_files {
   my ($self) = @_;
 
-  my ($file) = grep { $_->name eq $self->filename } @{ $self->zilla->files };
+  my ($file) = grep { $_->name eq $self->filename } $self->zilla->files->@*;
   return unless $file;
 
   my $content = $self->fill_in_string(

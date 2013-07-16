@@ -38,7 +38,7 @@ sub metadata {
     version => $],
   };
 
-  for my $plugin (@{ $self->zilla->plugins }) {
+  for my $plugin ($self->zilla->plugins->@*) {
     my $config = $plugin->dump_config;
 
     push @plugins, {

@@ -54,7 +54,7 @@ sub minter { 'Dist::Zilla::Tester::_Minter' }
 
   sub log_messages {
     my ($self) = @_;
-    [ map {; $_->{message} } @{ $self->chrome->logger->events } ];
+    [ map {; $_->{message} } $self->chrome->logger->events->@* ];
   }
 
   sub slurp_file {
@@ -108,7 +108,7 @@ sub minter { 'Dist::Zilla::Tester::_Minter' }
     dircopy($source, $root);
 
     if ($tester_arg->{also_copy}) {
-      while (my ($src, $dest) = each %{ $tester_arg->{also_copy} }) {
+      while (my ($src, $dest) = each $tester_arg->{also_copy}->%* ) {
         dircopy($src, $tempdir->subdir($dest));
       }
     }

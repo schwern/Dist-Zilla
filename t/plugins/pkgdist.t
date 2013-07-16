@@ -123,7 +123,7 @@ unlike(
 
 ok(
   grep({ m(skipping lib/DZT/WVer\.pm: assigns to \$DIST) }
-    @{ $tzil->log_messages }),
+    $tzil->log_messages->@*),
   "we report the reason for no updateing WVer",
 );
 
@@ -139,7 +139,7 @@ unlike(
 );
 
 ok(
-  grep({ m(skipping .+ DZT::TP2) } @{ $tzil->log_messages }),
+  grep({ m(skipping .+ DZT::TP2) } $tzil->log_messages->@*),
   "we report the reason for not updating Monkey",
 );
 

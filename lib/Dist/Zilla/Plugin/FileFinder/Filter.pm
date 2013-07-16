@@ -63,7 +63,7 @@ sub find_files {
 
   my $files = $self->found_files;
 
-  foreach my $re (@{ $self->skips }) {
+  foreach my $re ($self->skips->@*) {
     @$files = grep { $_->name !~ $re } @$files;
   }
 

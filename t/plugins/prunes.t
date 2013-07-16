@@ -31,7 +31,7 @@ for my $skip_skip (0..3) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     $tzil->files,
@@ -65,7 +65,7 @@ for my $skip_skip (0..1) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     $tzil->files,
@@ -89,7 +89,7 @@ for my $skip_skip (0..1) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     [ @files ],
@@ -111,7 +111,7 @@ for my $skip_skip (0..1) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     [ @files ],
@@ -136,7 +136,7 @@ for my $skip_skip (0..1) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     [ @files ],
@@ -158,7 +158,7 @@ for my $skip_skip (0..1) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     [ @files ],
@@ -182,7 +182,7 @@ for my $arg (qw(filename filenames)) {
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   is_filelist(
     [ @files ],

@@ -107,7 +107,7 @@ sub _setup_default_plugins {
       style       => 'list',
       code        => sub {
         my $plugins = $_[0]->zilla->plugins_with(-ExecFiles);
-        my @files = map {; @{ $_->find_files } } @$plugins;
+        my @files = map {; $_->find_files->@* } @$plugins;
 
         return \@files;
       },
@@ -632,7 +632,7 @@ sub install {
     ## no critic Punctuation
     my $wd = File::pushd::pushd($target);
     my @cmd = $arg->{install_command}
-            ? @{ $arg->{install_command} }
+            ? $arg->{install_command}->@*
             : ($^X => '-MCPAN' =>
                 $^O eq 'MSWin32' ? q{-e"install '.'"} : '-einstall "."');
 

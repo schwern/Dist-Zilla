@@ -60,7 +60,7 @@ END_CHANGES
   );
 
   ok(
-    grep({ /fake release happen/i } @{ $tzil->log_messages }),
+    (grep {; /fake release happen/i } $tzil->log_messages->@*),
     "we log a fake release when we fake release",
   );
 

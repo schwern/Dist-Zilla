@@ -17,7 +17,7 @@ is($result->exit_code, 0, "dzil would have exited 0");
 
 ok(
   (grep { $_ eq '[DZ] writing archive to DZ1-0.001.tar.gz' }
-    @{ $result->log_messages }),
+    $result->log_messages->@*),
   "we logged the archive-creation",
 );
 
@@ -33,7 +33,7 @@ my $tester = Dist::Zilla::Tester->from_config(
 $tester->build;
 
 ok(
-  (grep { $_->{message} =~ m<^\[DZ\]\s> } @{ $tester->chrome->logger->events }),
+  (grep { $_->{message} =~ m<^\[DZ\]\s> } $tester->chrome->logger->events->@*),
   "we have at least some expected log content",
 );
 

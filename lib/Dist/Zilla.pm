@@ -419,11 +419,11 @@ has files => (
 
 sub prune_file {
   my ($self, $file) = @_;
-  my @files = @{ $self->files };
+  my @files = $self->files->@*;
 
   for my $i (0 .. $#files) {
     next unless $file == $files[ $i ];
-    splice @{ $self->files }, $i, 1;
+    splice $self->files->@*, $i, 1;
     return;
   }
 
@@ -607,7 +607,7 @@ sub _check_dupe_files {
 
   for my $name (@dupes) {
     $self->log("attempt to add $name multiple times; added by: "
-       . join('; ', map { $_->added_by } @{ $files_named{ $name } })
+       . join('; ', map { $_->added_by } $files_named{ $name }->@*)
     );
   }
 

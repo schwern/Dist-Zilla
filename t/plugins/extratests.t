@@ -38,7 +38,7 @@ my $tzil = Builder->from_config(
 
 $tzil->build;
 
-my @files = map {; $_->name } @{ $tzil->files };
+my @files = map {; $_->name } $tzil->files->@*;
 
 is_deeply(
   [ sort @files ],

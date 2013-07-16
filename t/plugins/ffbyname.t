@@ -73,7 +73,7 @@ sub make_tzil {
   );
 
   # Don't bother building anything, we just need a list of filenames:
-  @{ $tzil->files } = @dist_files;
+  $tzil->files->@* = @dist_files;
 }
 
 #---------------------------------------------------------------------

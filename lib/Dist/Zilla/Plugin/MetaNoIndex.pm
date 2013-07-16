@@ -46,7 +46,7 @@ sub mvp_aliases {
   my %alias_for;
 
   for my $key (keys %ATTR_ALIAS) {
-    $alias_for{ $_ } = $key for @{ $ATTR_ALIAS{$key} };
+    $alias_for{ $_ } = $key for $ATTR_ALIAS{$key}->@*;
   }
 
   return \%alias_for;

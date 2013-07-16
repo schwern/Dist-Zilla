@@ -115,7 +115,7 @@ sub _build_ini_builder {
 
     for my $key (keys %$core_config) {
       my @values = ref $core_config->{ $key }
-                 ? @{ $core_config->{ $key } }
+                 ? $core_config->{ $key }->@*
                  : $core_config->{ $key };
 
       $config .= "$key = $_\n" for grep {defined} @values;
@@ -137,7 +137,7 @@ sub _build_ini_builder {
 
       for my $key (keys %$payload) {
         my @values = ref $payload->{ $key }
-                   ? @{ $payload->{ $key } }
+                   ? $payload->{ $key }->@*
                    : $payload->{ $key };
 
         $config .= "$key = $_\n" for grep {defined} @values;

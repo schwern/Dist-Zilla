@@ -17,7 +17,7 @@ sub new_tzil {
 }
 
 sub release_happened {
-  scalar grep( {/Fake release happening/i} @{ shift->log_messages } ),;
+  scalar grep( {/Fake release happening/i} shift->log_messages->@* ),;
 }
 
 {

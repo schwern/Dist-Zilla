@@ -33,7 +33,7 @@ use YAML::Tiny;
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   my %meta;
 
@@ -104,7 +104,7 @@ use YAML::Tiny;
 
   $tzil->build;
 
-  my @files = map {; $_->name } @{ $tzil->files };
+  my @files = map {; $_->name } $tzil->files->@*;
 
   my %meta;
 

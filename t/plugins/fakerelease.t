@@ -20,7 +20,7 @@ use Test::Fatal qw(exception);
   $tzil->release;
 
   ok(
-    grep({ /fake release happen/i } @{ $tzil->log_messages }),
+    grep({ /fake release happen/i } $tzil->log_messages->@*),
     "we log a fake release when we fake release",
   );
 }
@@ -43,7 +43,7 @@ use Test::Fatal qw(exception);
   $tzil->release;
 
   ok(
-    grep({ /fake release happen/i } @{ $tzil->log_messages }),
+    grep({ /fake release happen/i } $tzil->log_messages->@* ),
     "we log a fake release when we fake release",
   );
 }

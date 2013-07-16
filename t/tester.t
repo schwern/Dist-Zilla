@@ -53,7 +53,7 @@ my $tzil2 = Builder->from_config(
 );
 
 $tzil2->test;
-ok((grep { /all's well/ } @{ $tzil2->log_messages }),
+ok((grep { /all's well/ } $tzil2->log_messages->@*),
    "tester can run the test method");
 
 done_testing;
