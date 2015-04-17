@@ -42,6 +42,7 @@ sub abstract { 'run stuff in a dir where your dist is built' }
 sub opt_spec {
   [ 'build!' => 'do the Build actions before running the command; done by default',
                 { default => 1 } ],
+  [ 'build-perl=s' => 'the perl to use for building and testing' ],
 }
 
 sub description {
@@ -65,7 +66,11 @@ sub execute {
     $self->log("no command supplied to run so using \$$envname: $args->[0]");
   }
 
-  $self->zilla->run_in_build($args, { build => $opt->build });
+  my $zilla = $self->zilla({
+    ($opt->build_perl ? (build_perl => $opt->build_perl) : ()),
+  });
+
+  $zilla->run_in_build($args, { build => $opt->build });
 }
 
 1;

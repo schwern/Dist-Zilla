@@ -35,6 +35,7 @@ sub opt_spec {
   [ 'all' => 'enables the RELEASE_TESTING, AUTOMATED_TESTING and AUTHOR_TESTING env variables', { default => 0 } ],
   [ 'keep-build-dir|keep' => 'keep the build directory even after a success' ],
   [ 'jobs|j=i' => 'number of parallel test jobs to run' ],
+  [ 'build-perl=s' => 'the perl to use for building and testing' ],
 }
 
 =head1 OPTIONS
@@ -66,7 +67,11 @@ sub execute {
   local $ENV{AUTHOR_TESTING} = 1 if $opt->author or $opt->all;
   local $ENV{AUTOMATED_TESTING} = 1 if $opt->automated or $opt->all;
 
-  $self->zilla->test({
+  my $zilla = $self->zilla({
+    ($opt->build_perl ? (build_perl => $opt->build_perl) : ()),
+  });
+
+  $zilla->test({
     $opt->keep_build_dir
       ? (keep_build_dir => 1)
       : (),
