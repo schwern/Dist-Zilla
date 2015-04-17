@@ -235,6 +235,40 @@ has build_perl => (
   default => $^X,
 );
 
+=attr build_env
+
+This is a set of environment variables to set when doing building and testing.
+It's a hashref, but the C<build_env> method returns a list of pairs.
+
+=cut
+
+has build_env => (
+  isa => 'HashRef',
+  default => sub {  {}  },
+  traits  => [ 'Hash' ],
+  handles => { build_env => 'elements' },
+);
+
+=method run_in_build_env
+
+  $zilla->run_in_build_env(sub { ... });
+
+This method runs the given subref in a localized environment with the
+C<build_env> in place.
+
+=cut
+
+sub run_in_build_env {
+  my ($self, $code) = @_;
+  my %build_env = $self->build_env;
+  {
+    %build_env && (local @build_env{ keys %build_env } = values %build_env);
+    $code->()
+  }
+
+  return;
+}
+
 sub _load_config {
   my ($class, $arg) = @_;
   $arg ||= {};
