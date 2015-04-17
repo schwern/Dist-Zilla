@@ -26,12 +26,14 @@ sub build {
   return
     if -e 'Build' and (stat 'Build.PL')[9] <= (stat 'Build')[9];
 
-  my $build_perl = $self->zilla->build_perl;
-  $self->log_debug("running $build_perl Build.PL");
-  system $build_perl 'Build.PL' and die "error with Build.PL\n";
+  $self->zilla->do_with_build_env(sub {
+    my $build_perl = $self->zilla->build_perl;
+    $self->log_debug("running $build_perl Build.PL");
+    system $build_perl 'Build.PL' and die "error with Build.PL\n";
 
-  $self->log_debug("running $build_perl Build");
-  system $build_perl 'Build'    and die "error running $build_perl Build\n";
+    $self->log_debug("running $build_perl Build");
+    system $build_perl 'Build'    and die "error running $build_perl Build\n";
+  });
 
   return;
 }
@@ -52,7 +54,10 @@ sub test {
 
   my $build_perl = $self->zilla->build_perl;
   $self->log_debug('running ' . join(' ', $build_perl, 'Build', 'test', @testing));
-  system $build_perl, 'Build', 'test', @testing and die "error running $build_perl Build test\n";
+
+  $self->do_with_build_env(sub {
+    system $build_perl, 'Build', 'test', @testing and die "error running $build_perl Build test\n";
+  });
 
   return;
 }

@@ -249,20 +249,20 @@ has build_env => (
   handles => { build_env => 'elements' },
 );
 
-=method run_in_build_env
+=method do_with_build_env
 
-  $zilla->run_in_build_env(sub { ... });
+  $zilla->do_with_build_env(sub { ... });
 
 This method runs the given subref in a localized environment with the
 C<build_env> in place.
 
 =cut
 
-sub run_in_build_env {
+sub do_with_build_env {
   my ($self, $code) = @_;
   my %build_env = $self->build_env;
   {
-    %build_env && (local @build_env{ keys %build_env } = values %build_env);
+    %build_env && (local @ENV{ keys %build_env } = values %build_env);
     $code->()
   }
 
@@ -810,43 +810,45 @@ sub run_in_build {
   $self->log_fatal("you can't build without any BuildRunner plugins")
     unless my @builders = reverse sort @{ $self->plugins_with(-BuildRunner) };
 
-  require "Config.pm"; # skip autoprereq
+  $self->do_with_build_env(sub {
+    require "Config.pm"; # skip autoprereq
 
-  my ($target, $latest) = $self->ensure_built_in_tmpdir;
-  my $abstarget = $target->absolute;
+    my ($target, $latest) = $self->ensure_built_in_tmpdir;
+    my $abstarget = $target->absolute;
 
-  # building the dist for real
-  my $ok = eval {
-    my $wd = File::pushd::pushd($target);
+    # building the dist for real
+    my $ok = eval {
+      my $wd = File::pushd::pushd($target);
 
-    if ($arg and exists $arg->{build} and ! $arg->{build}) {
+      if ($arg and exists $arg->{build} and ! $arg->{build}) {
+        system(@$cmd) and die "error while running: @$cmd";
+        return 1;
+      }
+
+      $builders[0]->build;
+
+      local $ENV{PERL5LIB} = join $Config::Config{path_sep},
+        (map { $abstarget->subdir('blib', $_) } qw(arch lib)),
+        (defined $ENV{PERL5LIB} ? $ENV{PERL5LIB} : ());
+
+      local $ENV{PATH} = join $Config::Config{path_sep},
+        (map { $abstarget->subdir('blib', $_) } qw(bin script)),
+        (defined $ENV{PATH} ? $ENV{PATH} : ());
+
       system(@$cmd) and die "error while running: @$cmd";
-      return 1;
+      1;
+    };
+
+    if ($ok) {
+      $self->log("all's well; removing $target");
+      $target->rmtree;
+      $latest->remove if $latest;
+    } else {
+      my $error = $@ || '(unknown error)';
+      $self->log($error);
+      $self->log_fatal("left failed dist in place at $target");
     }
-
-    $builders[0]->build;
-
-    local $ENV{PERL5LIB} = join $Config::Config{path_sep},
-      (map { $abstarget->subdir('blib', $_) } qw(arch lib)),
-      (defined $ENV{PERL5LIB} ? $ENV{PERL5LIB} : ());
-
-    local $ENV{PATH} = join $Config::Config{path_sep},
-      (map { $abstarget->subdir('blib', $_) } qw(bin script)),
-      (defined $ENV{PATH} ? $ENV{PATH} : ());
-
-    system(@$cmd) and die "error while running: @$cmd";
-    1;
-  };
-
-  if ($ok) {
-    $self->log("all's well; removing $target");
-    $target->rmtree;
-    $latest->remove if $latest;
-  } else {
-    my $error = $@ || '(unknown error)';
-    $self->log($error);
-    $self->log_fatal("left failed dist in place at $target");
-  }
+  });
 }
 
 __PACKAGE__->meta->make_immutable;

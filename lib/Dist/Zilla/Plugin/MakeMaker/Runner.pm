@@ -27,12 +27,14 @@ sub build {
   return
     if -e $makefile and (stat 'Makefile.PL')[9] <= (stat $makefile)[9];
 
-  my $build_perl = $self->zilla->build_perl;
-  $self->log_debug("running $build_perl Makefile.PL");
-  system($build_perl => qw(Makefile.PL INSTALLMAN1DIR=none INSTALLMAN3DIR=none)) and die "error with Makefile.PL\n";
+  $self->zilla->do_with_build_env(sub {
+    my $build_perl = $self->zilla->build_perl;
+    $self->log_debug("running $build_perl Makefile.PL");
+    system($build_perl => qw(Makefile.PL INSTALLMAN1DIR=none INSTALLMAN3DIR=none)) and die "error with Makefile.PL\n";
 
-  $self->log_debug("running $make");
-  system($make) and die "error running $make\n";
+    $self->log_debug("running $make");
+    system($make) and die "error running $make\n";
+  });
 
   return;
 }
@@ -52,9 +54,12 @@ sub test {
   local $ENV{$ho} = $ENV{$ho} ? "$ENV{$ho}:$jobs" : $jobs;
 
   $self->log_debug(join(' ', "running $make test", ( $self->zilla->logger->get_debug ? 'TEST_VERBOSE=1' : () )));
-  system($make, 'test',
-    ( $self->zilla->logger->get_debug ? 'TEST_VERBOSE=1' : () ),
-  ) and die "error running $make test\n";
+
+  $self->zilla->do_with_build_env(sub {
+    system($make, 'test',
+      ( $self->zilla->logger->get_debug ? 'TEST_VERBOSE=1' : () ),
+    ) and die "error running $make test\n";
+  });
 
   return;
 }
