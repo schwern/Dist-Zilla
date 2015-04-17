@@ -15,7 +15,8 @@ been constructed, one will be by calling C<< Dist::Zilla->from_config >>.
 =cut
 
 sub zilla {
-  return $_[0]->app->zilla;
+  my ($self) = shift;
+  return $self->app->zilla(@_);
 }
 
 =method log
