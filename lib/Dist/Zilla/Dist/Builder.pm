@@ -220,6 +220,20 @@ sub _build_share_dir_map {
 }
 
 
+=attr build_perl
+
+This is the perl to run when things want to run perl for something like
+building or testing.  This is important when you want, for example, to C<dzil
+build> your dist with one perl (the one in C<$^X>) and C<perl Makefile.PL> and
+test it with another.
+
+=cut
+
+has build_perl => (
+  is      => 'ro',
+  default => $^X,
+);
+
 sub _load_config {
   my ($class, $arg) = @_;
   $arg ||= {};

@@ -27,8 +27,9 @@ sub build {
   return
     if -e $makefile and (stat 'Makefile.PL')[9] <= (stat $makefile)[9];
 
-  $self->log_debug("running $^X Makefile.PL");
-  system($^X => qw(Makefile.PL INSTALLMAN1DIR=none INSTALLMAN3DIR=none)) and die "error with Makefile.PL\n";
+  my $build_perl = $self->zilla->build_perl;
+  $self->log_debug("running $build_perl Makefile.PL");
+  system($build_perl => qw(Makefile.PL INSTALLMAN1DIR=none INSTALLMAN3DIR=none)) and die "error with Makefile.PL\n";
 
   $self->log_debug("running $make");
   system($make) and die "error running $make\n";
