@@ -44,6 +44,7 @@ sub opt_spec {
     [ 'build!' => 'do the Build actions before running the command; done by default',
                   { default => 1 } ],
     [ 'build-perl=s' => 'the perl to use for building and testing' ],
+    [ 'build-env=s%' => 'the environment to use for building and testing' ],
   )
 }
 
@@ -70,6 +71,7 @@ sub execute {
 
   my $zilla = $self->zilla({
     ($opt->build_perl ? (build_perl => $opt->build_perl) : ()),
+    ($opt->build_env  ? (build_env  => $opt->build_env ) : ()),
   });
 
   $zilla->run_in_build($args, { build => $opt->build });

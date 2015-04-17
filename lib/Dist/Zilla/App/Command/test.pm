@@ -36,6 +36,7 @@ sub opt_spec {
   [ 'keep-build-dir|keep' => 'keep the build directory even after a success' ],
   [ 'jobs|j=i' => 'number of parallel test jobs to run' ],
   [ 'build-perl=s' => 'the perl to use for building and testing' ],
+  [ 'build-env=s%' => 'the environment to use for building and testing' ],
 }
 
 =head1 OPTIONS
@@ -69,6 +70,7 @@ sub execute {
 
   my $zilla = $self->zilla({
     ($opt->build_perl ? (build_perl => $opt->build_perl) : ()),
+    ($opt->build_env  ? (build_env  => $opt->build_env ) : ()),
   });
 
   $zilla->test({
