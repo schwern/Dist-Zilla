@@ -60,12 +60,6 @@ Equivalent to --release --automated --author
 
 sub abstract { 'test your dist' }
 
-sub opt_spec {
-  return (
-    [ 'build-perl=s' => 'the perl to use for building and testing' ],
-  );
-}
-
 sub execute {
   my ($self, $opt, $arg) = @_;
 
