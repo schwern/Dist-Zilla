@@ -118,7 +118,8 @@ sub zilla {
       $zilla = Dist::Zilla::Dist::Builder->from_config({
         chrome => $self->chrome,
         _global_stashes => $self->_build_global_stashes,
-        %{ $config_overrides || {} },
+
+        extra_config => $config_overrides,
       });
     } catch {
       die $_ unless try { $_->isa('Config::MVP::Error') }

@@ -42,6 +42,7 @@ sub from_config {
     chrome => $arg->{chrome},
     config_class    => $arg->{config_class},
     _global_stashes => $arg->{_global_stashes},
+    _extra_config   => $arg->{extra_config},
   });
 
   my $self = $sequence->section_named('_')->zilla;
@@ -258,11 +259,14 @@ sub _load_config {
     section_class => 'Dist::Zilla::MVP::Section', # make this DZMA default
   });
 
-  for ($assembler->sequence->section_named('_')) {
-    $_->add_value(chrome => $arg->{chrome});
-    $_->add_value(root   => $arg->{root});
-    $_->add_value(_global_stashes => $arg->{_global_stashes})
+  for my $root ($assembler->sequence->section_named('_')) {
+    $root->add_value(chrome => $arg->{chrome});
+    $root->add_value(root   => $arg->{root});
+    $root->add_value(_global_stashes => $arg->{_global_stashes})
       if $arg->{_global_stashes};
+
+    $root->add_value($_ => $arg->{_extra_config}{$_})
+      for keys %{ $arg->{_extra_config} || {} };
   }
 
   my $seq;
