@@ -12,10 +12,24 @@ use namespace::autoclean;
 use Config;
 
 has 'make_path' => (
-  isa => 'Str',
-  is  => 'ro',
-  default => $Config{make} || 'make',
+  isa     => 'Str',
+  is      => 'ro',
+  lazy    => 1,
+  builder => '_build_make_path',
 );
+
+sub _build_make_path
+{
+  my $self = shift;
+
+  my $build_perl = $self->zilla->build_perl;
+  (
+      $build_perl eq $^X
+    ? $Config{make}
+      # Extract $Config{make} from $build_perl
+    : do { my $m = `$build_perl -V:make`; $m =~ /make='(.*)'/; $1 }
+  ) || 'make'
+}
 
 sub build {
   my $self = shift;
